@@ -1,0 +1,13 @@
+aws_region     = "region"
+cluster_name   = "cluster_name"
+cluster_version = "1.32"
+vpc_id         = "vpcid"
+subnet_ids     = [
+  "id1",
+  "id2"
+]
+instance_type   = "t3a.small"
+key_name        = "keypairname"
+image_url       = "<aws ecr>/tech-challenge-fastfood:latest"
+ingress_host    = "fiap-soat-seventeen-fastfood-service.com"
+kubeconfig_path = "~/.kube/config"

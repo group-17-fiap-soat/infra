@@ -34,9 +34,9 @@ variable "nodeGroup" {
   type        = string
 }
 
-# ARN da IAM Role do EKS (geralmente LabRole no AWS Academy)
-variable "labRole" {
-  description = "ARN da role IAM (ex: LabRole)"
+# ARN da IAM Role do EKS (geralmente role no AWS Academy)
+variable "role" {
+  description = "ARN da role IAM (ex: role)"
   type        = string
 }
 
@@ -63,5 +63,5 @@ variable "policyArn" {
 }
 
 variable "principalArn" {
-  default = "arn:aws:iam::711772164085:role/LabRole"
+  default = "arn:aws:iam::361598269712:role/RootRole"
 }

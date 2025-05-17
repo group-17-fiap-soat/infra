@@ -19,30 +19,30 @@ output "ecr_repository_arn" {
 #####################################
 #        EKS Cluster Outputs        #
 #####################################
-output "eks_cluster_name" {
-  value       = aws_eks_cluster.eks_cluster.name
-  description = "Name of the EKS cluster"
-}
-
-output "eks_cluster_endpoint" {
-  value       = aws_eks_cluster.eks_cluster.endpoint
-  description = "EKS cluster endpoint"
-}
-
-output "eks_cluster_ca" {
-  value       = aws_eks_cluster.eks_cluster.certificate_authority[0].data
-  description = "Base64 encoded EKS certificate authority data"
-}
-
-output "eks_cluster_arn" {
-  value       = aws_eks_cluster.eks_cluster.arn
-  description = "ARN of the EKS cluster"
-}
-
-output "eks_node_group_name" {
-  value       = aws_eks_node_group.eks_node.node_group_name
-  description = "Name of the EKS managed node group"
-}
+# output "eks_cluster_name" {
+#   value       = aws_eks_cluster.eks_cluster.name
+#   description = "Name of the EKS cluster"
+# }
+#
+# output "eks_cluster_endpoint" {
+#   value       = aws_eks_cluster.eks_cluster.endpoint
+#   description = "EKS cluster endpoint"
+# }
+#
+# output "eks_cluster_ca" {
+#   value       = aws_eks_cluster.eks_cluster.certificate_authority[0].data
+#   description = "Base64 encoded EKS certificate authority data"
+# }
+#
+# output "eks_cluster_arn" {
+#   value       = aws_eks_cluster.eks_cluster.arn
+#   description = "ARN of the EKS cluster"
+# }
+#
+# output "eks_node_group_name" {
+#   value       = module.eks.eks_managed_node_groups["fastfood-node"].node_group_name
+#   description = "Name of the EKS managed node group"
+# }
 
 #####################################
 #         Lambda Outputs            #

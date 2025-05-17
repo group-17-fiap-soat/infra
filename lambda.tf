@@ -2,8 +2,8 @@
 
 data "aws_caller_identity" "current" {}
 
-data "aws_iam_role" "labrole" {
-  name = "LabRole"
+data "aws_iam_role" "role" {
+  name = "RootRole"
 }
 
 # Lambda Function
@@ -12,7 +12,7 @@ resource "aws_lambda_function" "check_user_email" {
   function_name    = "check-user-email"
   handler          = "lambda_function.lambda_handler"
   runtime          = "python3.10"
-  role             = data.aws_iam_role.labrole.arn
+  role             = data.aws_iam_role.role.arn
   timeout          = 10
   memory_size      = 128
   source_code_hash = filebase64sha256("check_user.zip")

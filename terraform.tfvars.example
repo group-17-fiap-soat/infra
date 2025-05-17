@@ -8,5 +8,5 @@ db_user     = "fastfood"
 db_password = "Teste123"
 projectName    = "<cluster-name>"
 nodeGroup      = "fastfood-node"
-labRole        = "arn:aws:iam::<account>:role/LabRole"  # Substitua se necessário
+role        = "arn:aws:iam::<account>:role/role"  # Substitua se necessário
 instanceType   = "t3.small"

@@ -15,12 +15,3 @@ data "aws_subnet" "subnet" {
   id       = each.value
 }
 
-
-data "aws_eks_cluster" "eks" {
-  name       = aws_eks_cluster.eks_cluster.name
-  depends_on = [aws_eks_cluster.eks_cluster]
-}
-
-data "aws_eks_cluster_auth" "eks" {
-  name = aws_eks_cluster.eks_cluster.name
-}

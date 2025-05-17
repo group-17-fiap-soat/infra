@@ -1,13 +1,12 @@
-aws_region     = "region"
-cluster_name   = "cluster_name"
+aws_region     = "us-east-1"
+regionDefault = "us-east-1"
+cluster_name   = "<cluster-name>"
 cluster_version = "1.32"
-vpc_id         = "vpcid"
-subnet_ids     = [
-  "id1",
-  "id2"
-]
-instance_type   = "t3a.small"
-key_name        = "keypairname"
-image_url       = "<aws ecr>/tech-challenge-fastfood:latest"
-ingress_host    = "fiap-soat-seventeen-fastfood-service.com"
-kubeconfig_path = "~/.kube/config"
+db_host     = "meu-db.c7sjsfoh52si.us-east-1.rds.amazonaws.com"
+db_name     = "postgres"
+db_user     = "fastfood"
+db_password = "Teste123"
+projectName    = "<cluster-name>"
+nodeGroup      = "fastfood-node"
+labRole        = "arn:aws:iam::<account>:role/LabRole"  # Substitua se necessário
+instanceType   = "t3.small"

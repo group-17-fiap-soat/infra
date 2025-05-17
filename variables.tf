@@ -62,6 +62,6 @@ variable "policyArn" {
   default = "arn:aws:eks::aws:cluster-access-policy/AmazonEKSClusterAdminPolicy"
 }
 
-variable principalArn {
+variable "principalArn" {
   default = "arn:aws:iam::711772164085:role/LabRole"
 }

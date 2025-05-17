@@ -3,9 +3,9 @@ data "aws_vpc" "vpc" {
   depends_on = [aws_vpc.fastfood]
 }
 
-data "aws_subnets" "subnets"{
+data "aws_subnets" "subnets" {
   filter {
-    name = "vpc-id"
+    name   = "vpc-id"
     values = [data.aws_vpc.vpc.id]
   }
 }
@@ -17,7 +17,7 @@ data "aws_subnet" "subnet" {
 
 
 data "aws_eks_cluster" "eks" {
-  name = aws_eks_cluster.eks_cluster.name
+  name       = aws_eks_cluster.eks_cluster.name
   depends_on = [aws_eks_cluster.eks_cluster]
 }
 

@@ -92,4 +92,9 @@ locals {
     private-1 = aws_subnet.private[0].id
     private-2 = aws_subnet.private[1].id
   }
+
+  subnnet_id_map_public_only = {
+    public-1  = aws_subnet.public[0].id
+    public-2  = aws_subnet.public[1].id
+  }
 }

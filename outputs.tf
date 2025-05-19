@@ -16,48 +16,6 @@ output "ecr_repository_arn" {
   description = "ECR repository ARN"
 }
 
-#####################################
-#        EKS Cluster Outputs        #
-#####################################
-# output "eks_cluster_name" {
-#   value       = aws_eks_cluster.eks_cluster.name
-#   description = "Name of the EKS cluster"
-# }
-#
-# output "eks_cluster_endpoint" {
-#   value       = aws_eks_cluster.eks_cluster.endpoint
-#   description = "EKS cluster endpoint"
-# }
-#
-# output "eks_cluster_ca" {
-#   value       = aws_eks_cluster.eks_cluster.certificate_authority[0].data
-#   description = "Base64 encoded EKS certificate authority data"
-# }
-#
-# output "eks_cluster_arn" {
-#   value       = aws_eks_cluster.eks_cluster.arn
-#   description = "ARN of the EKS cluster"
-# }
-#
-# output "eks_node_group_name" {
-#   value       = module.eks.eks_managed_node_groups["fastfood-node"].node_group_name
-#   description = "Name of the EKS managed node group"
-# }
-
-#####################################
-#         Lambda Outputs            #
-#####################################
-output "lambda_function_name" {
-  value       = aws_lambda_function.check_user_email.function_name
-  description = "Lambda function name"
-}
-
-output "lambda_function_arn" {
-  value       = aws_lambda_function.check_user_email.arn
-  description = "Lambda function ARN"
-}
-
-# Removido o output "lambda_function_url" pois não está definido nenhum recurso aws_lambda_function_url no Terraform
 
 #####################################
 #         Networking Outputs        #
@@ -82,10 +40,3 @@ output "security_group_id" {
   description = "Security group ID used by cluster"
 }
 
-#####################################
-#         API Gateway Outputs       #
-#####################################
-output "api_gateway_url" {
-  value       = aws_apigatewayv2_api.auth.api_endpoint
-  description = "API Gateway public endpoint URL"
-}

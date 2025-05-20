@@ -34,7 +34,7 @@ jobs:
           nodeGroup         = "fastfood-node"
           role              = "arn:aws:iam::361598269712:role/RootRole"
           instanceType      = "t3.small"
-          s3_bucket_name    = "terraform-pipeline-bucket"
+          s3_bucket_name    = "terraform-pipeline-bucket-361598269712"
           EOF
 
       - name: Gerar backend.tf para usar estado remoto
@@ -42,7 +42,7 @@ jobs:
           cat <<EOF > backend.tf
           terraform {
             backend "s3" {
-              bucket = "terraform-pipeline-bucket"
+              bucket = "terraform-pipeline-bucket-361598269712"
               key    = "infra/terraform.tfstate"
               region = "us-east-1"
               encrypt = true

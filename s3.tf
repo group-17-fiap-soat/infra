@@ -9,5 +9,5 @@ resource "aws_s3_bucket" "terraform_state" {
 }
 
 variable "s3_bucket_name" {
-  default = "terraform-pipeline-bucket"
+  default = "terraform-pipeline-bucket-361598269712"
 }

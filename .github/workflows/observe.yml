@@ -33,6 +33,10 @@ jobs:
       - name: Terraform Init
         run: terraform init
 
+      - name: Tentar importar aws-auth ConfigMap (caso já exista)
+        run: |
+          terraform import kubernetes_config_map.aws_auth kube-system/aws-auth || echo "aws-auth não existe ainda. Seguindo..."
+
       - name: Terraform Plan
         run: terraform plan
 

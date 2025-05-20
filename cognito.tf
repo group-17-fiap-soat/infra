@@ -46,7 +46,7 @@ resource "random_string" "suffix" {
 }
 
 resource "aws_secretsmanager_secret" "cognito_secret" {
-  name = "cognito/app-client-secret-${timestamp()}"
+  name = "cognito/app_client_secret_${terraform.workspace}_${replace(timestamp(), ":", "")}"
 }
 
 resource "aws_secretsmanager_secret_version" "cognito_secret_value" {

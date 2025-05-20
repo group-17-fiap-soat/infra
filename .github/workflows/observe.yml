@@ -46,7 +46,5 @@ jobs:
           }
 
       - name: Terraform Apply
-        run: terraform apply -auto-approve || {
-          echo "::warning::Nada foi aplicado, pois não houve mudanças reais."
-          exit 0
-          }
+        run: terraform apply -auto-approve || { echo "::warning::Nada foi aplicado, pois não houve mudanças reais."; exit 0; }
+

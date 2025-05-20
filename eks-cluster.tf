@@ -12,7 +12,7 @@ module "eks" {
   )
 
   cluster_endpoint_public_access = true
-  manage_aws_auth_configmap      = true
+  manage_aws_auth_configmap      = false
 
   cluster_enabled_log_types = [
     "api", "audit", "authenticator"

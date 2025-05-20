@@ -46,7 +46,7 @@ resource "random_string" "suffix" {
 }
 
 resource "aws_secretsmanager_secret" "cognito_secret" {
-  name = "cognito/app-client-secret"
+  name = "cognito/app-client-secret-${timestamp()}"
 }
 
 resource "aws_secretsmanager_secret_version" "cognito_secret_value" {

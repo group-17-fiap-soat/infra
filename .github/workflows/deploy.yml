@@ -1,0 +1,73 @@
+name: Terraform Deploy
+
+on:
+  push:
+    branches: [main]
+
+jobs:
+  terraform:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: infra
+
+    steps:
+      - name: Checkout do código
+        uses: actions/checkout@v3
+
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v3
+        with:
+          terraform_version: 1.5.7
+
+      - name: Autenticar na AWS
+        uses: aws-actions/configure-aws-credentials@v2
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: us-east-1
+
+      - name: Criar terraform.tfvars dinamicamente
+        run: |
+          cat <<EOF > terraform.tfvars
+          aws_region        = "us-east-1"
+          regionDefault     = "us-east-1"
+          cluster_name      = "fastfood-app-eks"
+          cluster_version   = "1.32"
+          projectName       = "fastfood-app-eks"
+          nodeGroup         = "fastfood-node"
+          role              = "arn:aws:iam::361598269712:role/RootRole"
+          instanceType      = "t3.small"
+          s3_bucket_name    = "terraform-pipeline-bucket"
+          EOF
+
+      - name: Inicializar Terraform (estado local)
+        run: terraform init
+
+      - name: Aplicar apenas o bucket S3
+        run: terraform apply -auto-approve -target=aws_s3_bucket.terraform_state
+
+      - name: Configurar backend S3 dinamicamente
+        run: |
+          cat <<EOF > backend.tf
+          terraform {
+            backend "s3" {
+              bucket = "terraform-pipeline-bucket"
+              key    = "infra/terraform.tfstate"
+              region = "us-east-1"
+              encrypt = true
+            }
+          }
+          EOF
+
+      - name: Re-inicializar Terraform com backend remoto
+        run: terraform init -migrate-state -force-copy
+
+      - name: Validar Terraform
+        run: terraform validate
+
+      - name: Plano de execução
+        run: terraform plan -var-file="terraform.tfvars"
+
+      - name: Aplicar infraestrutura
+        run: terraform apply -auto-approve -var-file="terraform.tfvars"

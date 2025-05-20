@@ -2,7 +2,7 @@ name: Observe EKS
 
 on:
   workflow_run:
-    workflows: ["Terraform Deploy"]  # deve ser exatamente o mesmo `name:` do deploy.yml
+    workflows: ["Terraform Deploy"]
     types:
       - completed
 
@@ -30,21 +30,11 @@ jobs:
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-region: us-east-1
 
-      - name: Criar backend.tf para observar o estado remoto
-        run: |
-          cat <<EOF > backend.tf
-          terraform {
-            backend "s3" {
-              bucket = "terraform-pipeline-bucket-361598269712"
-              key    = "infra/terraform.tfstate"
-              region = "us-east-1"
-              encrypt = true
-            }
-          }
-          EOF
-
       - name: Terraform Init
         run: terraform init
 
-      - name: Terraform Plan (Observação)
+      - name: Terraform Plan
         run: terraform plan
+
+      - name: Terraform Apply
+        run: terraform apply -auto-approve

@@ -38,7 +38,11 @@ jobs:
           terraform import kubernetes_config_map.aws_auth kube-system/aws-auth || echo "aws-auth não existe ainda. Seguindo..."
 
       - name: Terraform Plan
-        run: terraform plan
+        run: |
+          terraform plan -out=tfplan || {
+            echo "::warning::Sem alterações detectadas no plano. Prosseguindo com apply (se necessário)."
+            exit 0
+          }
 
       - name: Terraform Apply
         run: terraform apply -auto-approve

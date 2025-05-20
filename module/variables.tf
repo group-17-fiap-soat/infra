@@ -35,9 +35,9 @@ variable "instanceType" {
   type        = string
 }
 
-variable "regionDefault" {
-  description = "Região base para ignorar AZ específica (ex: us-east-1)"
-  type        = string
+
+variable "s3_bucket_name" {
+  default = "terraform-pipeline-bucket-361598269712"
 }
 
 

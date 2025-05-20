@@ -1,37 +1,27 @@
-resource "terraform_data" "eks_ready" {
-  depends_on = [module.eks]
-}
-
 module "eks" {
   source  = "terraform-aws-modules/eks/aws"
   version = "19.21.0"
 
-
   cluster_name    = var.projectName
   cluster_version = "1.32"
   vpc_id          = aws_vpc.fastfood.id
-  subnet_ids      = [for subnet in data.aws_subnet.subnet : subnet.id if subnet.availability_zone != "${var.aws_region}e"]
+
+  subnet_ids = concat(
+    aws_subnet.public[*].id,
+    aws_subnet.private[*].id
+  )
 
   cluster_endpoint_public_access = true
   manage_aws_auth_configmap      = true
 
-
   cluster_enabled_log_types = [
-    "api",
-    "audit",
-    "authenticator"
+    "api", "audit", "authenticator"
   ]
 
   cluster_addons = {
-    coredns = {
-      resolve_conflicts = "OVERWRITE"
-    }
-    kube-proxy = {
-      resolve_conflicts = "OVERWRITE"
-    }
-    vpc-cni = {
-      resolve_conflicts = "OVERWRITE"
-    }
+    coredns = { resolve_conflicts = "OVERWRITE" }
+    kube-proxy = { resolve_conflicts = "OVERWRITE" }
+    vpc-cni = { resolve_conflicts = "OVERWRITE" }
   }
 
   aws_auth_roles = [
@@ -43,7 +33,7 @@ module "eks" {
   ]
 
   eks_managed_node_groups = {
-    fastfood-node = {
+    "${var.nodeGroup}" = {
       desired_size   = 2
       min_size       = 1
       max_size       = 2

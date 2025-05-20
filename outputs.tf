@@ -40,3 +40,19 @@ output "security_group_id" {
   description = "Security group ID used by cluster"
 }
 
+#####################################
+#               EKS                 #
+#####################################
+# outputs.tf
+output "eks_cluster_name" {
+  value = module.eks.cluster_name
+}
+
+output "eks_cluster_endpoint" {
+  value = module.eks.cluster_endpoint
+}
+
+output "eks_cluster_ca" {
+  value = module.eks.cluster_certificate_authority_data
+}
+

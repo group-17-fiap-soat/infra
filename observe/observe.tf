@@ -27,4 +27,10 @@ resource "kubernetes_config_map" "aws_auth" {
       }
     ])
   }
+
+  lifecycle {
+    ignore_changes = [metadata]
+    replace_triggered_by = [data.aws_eks_cluster.eks.id]
+  }
+
 }

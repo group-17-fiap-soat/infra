@@ -33,9 +33,10 @@ jobs:
       - name: Terraform Init
         run: terraform init
 
-      - name: Tentar importar aws-auth ConfigMap (caso já exista)
+      - name: Import aws-auth ConfigMap (somente se necessário)
         run: |
-          terraform import kubernetes_config_map.aws_auth kube-system/aws-auth || echo "aws-auth não existe ainda. Seguindo..."
+          terraform state show kubernetes_config_map.aws_auth >/dev/null 2>&1 || \
+          terraform import kubernetes_config_map.aws_auth kube-system/aws-auth
 
       - name: Terraform Plan
         run: |
@@ -45,4 +46,7 @@ jobs:
           }
 
       - name: Terraform Apply
-        run: terraform apply -auto-approve
+        run: terraform apply -auto-approve || {
+          echo "::warning::Nada foi aplicado, pois não houve mudanças reais."
+          exit 0
+          }

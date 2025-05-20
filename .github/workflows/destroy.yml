@@ -6,9 +6,6 @@ on:
 jobs:
   destroy:
     runs-on: ubuntu-latest
-    defaults:
-      run:
-        working-directory: infra
 
     steps:
       - name: Checkout do código

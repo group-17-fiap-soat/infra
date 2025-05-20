@@ -42,8 +42,9 @@ jobs:
       - name: Inicializar Terraform (estado local)
         run: terraform init
 
-      - name: Aplicar apenas o bucket S3
-        run: terraform apply -auto-approve -target=aws_s3_bucket.terraform_state
+      - name: Aplicar apenas o bucket S3 (ignorar erro se já existir)
+        run: |
+          terraform apply -auto-approve -target=aws_s3_bucket.terraform_state || echo "Bucket já existe, seguindo..."
 
       - name: Configurar backend S3 dinamicamente
         run: |

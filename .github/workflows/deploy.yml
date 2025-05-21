@@ -42,40 +42,6 @@ jobs:
       - name: Inicializar Terraform (estado local)
         run: terraform init
 
-      - name: Importar alias KMS se já existir
-        run: |
-          ACCOUNT_ID=${{ secrets.AWS_ACCOUNT_ID }}
-          ALIAS_NAME="alias/eks/fastfood-app-eks"
-          ALIAS_ARN="arn:aws:kms:us-east-1:$ACCOUNT_ID:$ALIAS_NAME"
-          
-          echo "🔍 Verificando alias KMS: $ALIAS_ARN"
-          
-          if aws kms list-aliases --region us-east-1 --query "Aliases[?AliasName=='$ALIAS_NAME'] | length(@)" | grep -q 1; then
-            echo "✅ Alias existe na AWS."
-            if ! terraform state list | grep -q 'module.infra.module.eks.module.kms.aws_kms_alias.this\["cluster"\]'; then
-              echo "📥 Importando alias para o Terraform state..."
-              terraform import 'module.infra.module.eks.module.kms.aws_kms_alias.this["cluster"]' "$ALIAS_ARN"
-            else
-              echo "⚠️ Alias já está no state. Ignorando."
-            fi
-          else
-            echo "ℹ️ Alias não existe na AWS ainda."
-          fi
-
-      - name: Criar backend.tf dinamicamente
-        run: |
-          cat <<EOF > backend.tf
-          terraform {
-            backend "s3" {
-              bucket = "terraform-pipeline-bucket-361598269712"
-              key    = "module/terraform.tfstate"
-              region = "us-east-1"
-              encrypt = true
-            }
-          }
-          EOF
-        
-
       - name: Aplicar apenas o bucket S3 (ignorar erro se já existir)
         run: |
           terraform apply -auto-approve -target=aws_s3_bucket.terraform_state || echo "Bucket já existe, seguindo..."
@@ -98,6 +64,54 @@ jobs:
 
       - name: Validar Terraform
         run: terraform validate
+
+      - name: Verificar e importar recursos se já existirem
+        run: |
+          set -e
+          echo "🔁 Importando recursos existentes no AWS..."
+          
+          ### 1. S3 Bucket
+          if aws s3api head-bucket --bucket terraform-pipeline-bucket-361598269712 2>/dev/null; then
+            if ! terraform state list | grep -q 'module.infra.aws_s3_bucket.terraform_state'; then
+              terraform import module.infra.aws_s3_bucket.terraform_state terraform-pipeline-bucket-361598269712 || true
+            else
+              echo "✅ Bucket já está no state. Ignorando import."
+            fi
+          fi
+          
+          ### 2. KMS Alias
+          ALIAS="alias/eks/fastfood-app-eks"
+          ACCOUNT_ID=${{ secrets.AWS_ACCOUNT_ID }}
+          ALIAS_ARN="arn:aws:kms:us-east-1:$ACCOUNT_ID:$ALIAS"
+          if aws kms list-aliases --region us-east-1 \
+            --query "Aliases[?AliasName=='$ALIAS'] | length(@)" | grep -q 1; then
+            if ! terraform state list | grep -q 'module.infra.module.eks.module.kms.aws_kms_alias.this\["cluster"\]'; then
+              terraform import 'module.infra.module.eks.module.kms.aws_kms_alias.this["cluster"]' "$ALIAS_ARN" || true
+            else
+              echo "✅ Alias já está no state. Ignorando import."
+            fi
+          fi
+          
+          ### 3. ECR Repository
+          if aws ecr describe-repositories --repository-names tech-challenge-fastfood --region us-east-1 >/dev/null 2>&1; then
+            if ! terraform state list | grep -q 'module.infra.aws_ecr_repository.fastfood'; then
+              terraform import module.infra.aws_ecr_repository.fastfood tech-challenge-fastfood || true
+            else
+              echo "✅ ECR já está no state. Ignorando import."
+            fi
+          fi
+          
+          ### 4. Secrets Manager
+          if aws secretsmanager describe-secret --secret-id cognito/app-client-secret --region us-east-1 >/dev/null 2>&1; then
+            if ! terraform state list | grep -q 'module.infra.aws_secretsmanager_secret.cognito_secret'; then
+              terraform import module.infra.aws_secretsmanager_secret.cognito_secret cognito/app-client-secret || true
+            else
+              echo "✅ Secret já está no state. Ignorando import."
+            fi
+          fi
+          
+          echo "✅ Fim da verificação de importações."
+
 
       - name: Plano de execução
         run: terraform plan -var-file="terraform.tfvars"

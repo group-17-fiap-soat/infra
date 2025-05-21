@@ -68,41 +68,50 @@ jobs:
       - name: Verificar e importar recursos se já existirem
         run: |
           set -e
-          
           echo "🔁 Importando recursos existentes no AWS..."
           
           ### 1. S3 Bucket
           if aws s3api head-bucket --bucket terraform-pipeline-bucket-361598269712 2>/dev/null; then
-            terraform import module.infra.aws_s3_bucket.terraform_state terraform-pipeline-bucket-361598269712 || true
+            if ! terraform state list | grep -q 'module.infra.aws_s3_bucket.terraform_state'; then
+              terraform import module.infra.aws_s3_bucket.terraform_state terraform-pipeline-bucket-361598269712 || true
+            else
+              echo "✅ Bucket já está no state. Ignorando import."
+            fi
           fi
           
-          ### 2. KMS Alias 
-          ALIAS_NAME="alias/eks/fastfood-app-eks"
+          ### 2. KMS Alias
+          ALIAS="alias/eks/fastfood-app-eks"
           ACCOUNT_ID=${{ secrets.AWS_ACCOUNT_ID }}
-          ALIAS_ARN="arn:aws:kms:us-east-1:$ACCOUNT_ID:$ALIAS_NAME"
-          
-          EXISTS_ALIAS=$(aws kms list-aliases --region us-east-1 \
-            --query "Aliases[?AliasName=='$ALIAS_NAME'] | length(@)")
-          
-          if [ "$EXISTS_ALIAS" -eq 1 ]; then
-            echo "✅ Alias $ALIAS_NAME existe. Importando para o Terraform..."
-            terraform state list | grep 'module.infra.module.eks.module.kms.aws_kms_alias.this\["cluster"\]' || \
-            terraform import 'module.infra.module.eks.module.kms.aws_kms_alias.this["cluster"]' "$ALIAS_ARN" || echo "⚠️ Alias já está no state."
-          else
-            echo "ℹ️ Alias $ALIAS_NAME não encontrado, Terraform criará."
+          ALIAS_ARN="arn:aws:kms:us-east-1:$ACCOUNT_ID:$ALIAS"
+          if aws kms list-aliases --region us-east-1 \
+            --query "Aliases[?AliasName=='$ALIAS'] | length(@)" | grep -q 1; then
+            if ! terraform state list | grep -q 'module.infra.module.eks.module.kms.aws_kms_alias.this\["cluster"\]'; then
+              terraform import 'module.infra.module.eks.module.kms.aws_kms_alias.this["cluster"]' "$ALIAS_ARN" || true
+            else
+              echo "✅ Alias já está no state. Ignorando import."
+            fi
           fi
           
           ### 3. ECR Repository
           if aws ecr describe-repositories --repository-names tech-challenge-fastfood --region us-east-1 >/dev/null 2>&1; then
-            terraform import module.infra.aws_ecr_repository.fastfood tech-challenge-fastfood || true
+            if ! terraform state list | grep -q 'module.infra.aws_ecr_repository.fastfood'; then
+              terraform import module.infra.aws_ecr_repository.fastfood tech-challenge-fastfood || true
+            else
+              echo "✅ ECR já está no state. Ignorando import."
+            fi
           fi
           
           ### 4. Secrets Manager
           if aws secretsmanager describe-secret --secret-id cognito/app-client-secret --region us-east-1 >/dev/null 2>&1; then
-            terraform import module.infra.aws_secretsmanager_secret.cognito_secret cognito/app-client-secret || true
+            if ! terraform state list | grep -q 'module.infra.aws_secretsmanager_secret.cognito_secret'; then
+              terraform import module.infra.aws_secretsmanager_secret.cognito_secret cognito/app-client-secret || true
+            else
+              echo "✅ Secret já está no state. Ignorando import."
+            fi
           fi
           
           echo "✅ Fim da verificação de importações."
+
 
       - name: Plano de execução
         run: terraform plan -var-file="terraform.tfvars"

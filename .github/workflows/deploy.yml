@@ -65,6 +65,35 @@ jobs:
       - name: Validar Terraform
         run: terraform validate
 
+      - name: Verificar e importar recursos se já existirem
+        run: |
+          set -e
+          
+          echo "🔁 Importando recursos existentes no AWS..."
+          
+          ### 1. S3 Bucket
+          if aws s3api head-bucket --bucket terraform-pipeline-bucket-361598269712 2>/dev/null; then
+            terraform import module.infra.aws_s3_bucket.terraform_state terraform-pipeline-bucket-361598269712 || true
+          fi
+          
+          ### 2. KMS Alias
+          if aws kms list-aliases --region us-east-1 --query "Aliases[?AliasName=='alias/eks/fastfood-app-eks'] | length(@)" | grep -q 1; then
+            terraform import module.infra.module.eks.module.kms.aws_kms_alias.this[\"cluster\"] arn:aws:kms:us-east-1:${{ secrets.AWS_ACCOUNT_ID }}:alias/eks/fastfood-app-eks || true
+          fi
+          
+          ### 3. ECR Repository
+          if aws ecr describe-repositories --repository-names tech-challenge-fastfood --region us-east-1 2>/dev/null; then
+            terraform import module.infra.aws_ecr_repository.fastfood tech-challenge-fastfood || true
+          fi
+          
+          ### 4. Secrets Manager
+          if aws secretsmanager describe-secret --secret-id cognito/app-client-secret --region us-east-1 2>/dev/null; then
+            terraform import module.infra.aws_secretsmanager_secret.cognito_secret cognito/app-client-secret || true
+          fi
+          
+          echo "✅ Recursos importados (ou já estavam no estado)."
+        
+
       - name: Plano de execução
         run: terraform plan -var-file="terraform.tfvars"
 

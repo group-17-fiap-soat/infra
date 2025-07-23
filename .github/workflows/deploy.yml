@@ -39,7 +39,7 @@ jobs:
           s3_bucket_name    = "terraform-pipeline-bucket-361598269712"
           EOF
 
-      - name: Cleanup old .terraform (if exists)
+      - name: 🔁 Cleanup para garantir módulos atualizados
         run: rm -rf .terraform .terraform.lock.hcl
 
       - name: Inicializar Terraform (estado local)
@@ -61,6 +61,9 @@ jobs:
             }
           }
           EOF
+
+      - name: 🔁 Cleanup pós-backend para garantir módulos atualizados
+        run: rm -rf .terraform
 
       - name: Re-inicializar Terraform com backend remoto
         run: terraform init -upgrade -migrate-state -force-copy

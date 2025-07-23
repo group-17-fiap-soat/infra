@@ -39,6 +39,9 @@ jobs:
           s3_bucket_name    = "terraform-pipeline-bucket-361598269712"
           EOF
 
+      - name: Cleanup old .terraform (if exists)
+        run: rm -rf .terraform .terraform.lock.hcl
+
       - name: Inicializar Terraform (estado local)
         run: terraform init
 

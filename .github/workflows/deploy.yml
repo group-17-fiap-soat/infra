@@ -43,7 +43,7 @@ jobs:
         run: rm -rf .terraform .terraform.lock.hcl
 
       - name: Inicializar Terraform (estado local)
-        run: terraform init
+        run: terraform init -upgrade
 
       - name: Aplicar apenas o bucket S3 (ignorar erro se já existir)
         run: |

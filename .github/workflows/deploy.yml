@@ -62,11 +62,17 @@ jobs:
           }
           EOF
 
-      - name: 🔁 Cleanup pós-backend para garantir módulos atualizados
-        run: rm -rf .terraform
+      - name: 🧹 Forçar remoção de módulos antigos
+        run: |
+          rm -rf .terraform/modules
+          rm -rf .terraform/modules/modules.json
+          find .terraform -type d -name "*eks*" -exec rm -rf {} +
 
       - name: Re-inicializar Terraform com backend remoto
         run: terraform init -upgrade -migrate-state -force-copy
+
+      - name: 🔄 Forçar atualização dos módulos
+        run: terraform get -update=true
 
       - name: Validar Terraform
         run: terraform validate

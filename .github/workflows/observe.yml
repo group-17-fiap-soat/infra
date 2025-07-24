@@ -33,10 +33,10 @@ jobs:
       - name: Terraform Init
         run: terraform init
 
-      - name: Import aws-auth ConfigMap (somente se necessário)
-        run: |
-          terraform state show kubernetes_config_map.aws_auth >/dev/null 2>&1 || \
-          terraform import kubernetes_config_map.aws_auth kube-system/aws-auth
+#      - name: Import aws-auth ConfigMap (somente se necessário)
+#        run: |
+#          terraform state show kubernetes_config_map.aws_auth >/dev/null 2>&1 || \
+#          terraform import kubernetes_config_map.aws_auth kube-system/aws-auth
 
       - name: Terraform Plan
         run: |

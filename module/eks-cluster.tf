@@ -12,7 +12,6 @@ module "eks" {
   )
 
   cluster_endpoint_public_access = true
-  manage_aws_auth_configmap = true
 
   cluster_enabled_log_types = [
     "api", "audit", "authenticator"
@@ -31,7 +30,7 @@ module "eks" {
 
   access_entries = { 
     admin = {
-      principal_arn        = var.principalArn
+      principal_arn        = "arn:aws:iam::361598269712:user/root"
       type                 = "STANDARD"
       policy_associations  = []
       username             = "admin"

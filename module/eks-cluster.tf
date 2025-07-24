@@ -1,6 +1,6 @@
 module "eks" {
   source  = "terraform-aws-modules/eks/aws"
-  version = "19.21.0"
+  version = "20.3.0"
 
   cluster_name    = var.projectName
   cluster_version = "1.32"
@@ -12,24 +12,9 @@ module "eks" {
   )
 
   cluster_endpoint_public_access = true
-  manage_aws_auth_configmap      = false
 
   cluster_enabled_log_types = [
     "api", "audit", "authenticator"
-  ]
-
-  cluster_addons = {
-    coredns = { resolve_conflicts = "OVERWRITE" }
-    kube-proxy = { resolve_conflicts = "OVERWRITE" }
-    vpc-cni = { resolve_conflicts = "OVERWRITE" }
-  }
-
-  aws_auth_roles = [
-    {
-      rolearn  = var.principalArn
-      username = "admin"
-      groups   = ["system:masters"]
-    }
   ]
 
   eks_managed_node_groups = {
@@ -40,6 +25,16 @@ module "eks" {
       instance_types = [var.instanceType]
       key_name       = "devkeypair"
       iam_role_arn   = var.role
+    }
+  }
+
+  access_entries = {
+    admin = {
+      kubernetes_groups    = ["system:masters"]
+      principal_arn        = var.principalArn
+      type                 = "role"
+      policy_associations  = []
+      username             = "admin"
     }
   }
 }

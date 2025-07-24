@@ -28,10 +28,8 @@ module "eks" {
     }
   }
 
-
   access_entries = { 
     admin = {
-      kubernetes_groups    = ["system:masters"]
       principal_arn        = var.principalArn
       type                 = "STANDARD"
       policy_associations  = []

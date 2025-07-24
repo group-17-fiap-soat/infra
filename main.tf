@@ -10,4 +10,7 @@ module "infra" {
   role            = var.role
   instanceType    = var.instanceType
   s3_bucket_name  = var.s3_bucket_name
+  sonar_ami_id          = var.sonar_ami_id
+  sonar_instance_type   = var.sonar_instance_type
+  sonar_key_name        = var.sonar_key_name
 }

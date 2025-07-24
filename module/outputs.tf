@@ -56,3 +56,8 @@ output "eks_cluster_ca" {
   value = module.eks.cluster_certificate_authority_data
 }
 
+output "sonar_endpoint" {
+  description = "Endpoint do Sonar"
+  value       = aws_instance.sonar.public_ip
+}
+

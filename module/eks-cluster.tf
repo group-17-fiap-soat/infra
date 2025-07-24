@@ -18,7 +18,7 @@ module "eks" {
   ]
 
   eks_managed_node_groups = {
-    "${var.nodeGroup}" = {
+    (var.nodeGroup) = {
       desired_size   = 2
       min_size       = 1
       max_size       = 2
@@ -30,7 +30,7 @@ module "eks" {
 
   access_entries = { 
     admin = {
-      principal_arn        = var.principalArn
+      principal_arn        = "arn:aws:iam::361598269712:user/root"
       type                 = "STANDARD"
       policy_associations  = []
       username             = "admin"

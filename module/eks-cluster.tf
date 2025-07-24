@@ -28,7 +28,8 @@ module "eks" {
     }
   }
 
-  access_entries = {
+
+  access_entries = { 
     admin = {
       kubernetes_groups    = ["system:masters"]
       principal_arn        = var.principalArn

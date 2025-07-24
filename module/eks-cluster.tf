@@ -32,7 +32,7 @@ module "eks" {
     admin = {
       kubernetes_groups    = ["system:masters"]
       principal_arn        = var.principalArn
-      type                 = "role"
+      type                 = "STANDARD"
       policy_associations  = []
       username             = "admin"
     }

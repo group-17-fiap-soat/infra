@@ -37,7 +37,7 @@ module "eks" {
     }
 
     ci = {
-      principal_arn        = "arn:aws:iam::361598269712:role/codebuild-fastfood-pipeline-role"  
+      principal_arn        = "arn:aws:iam::361598269712:role/codebuild-fastfood-pipeline-role"
       type                 = "STANDARD"
       policy_associations  = []
       username             = "ci"

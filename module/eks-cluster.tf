@@ -18,7 +18,7 @@ module "eks" {
   ]
 
   eks_managed_node_groups = {
-    "${var.nodeGroup}" = {
+    (var.nodeGroup) = {
       desired_size   = 2
       min_size       = 1
       max_size       = 2
@@ -34,6 +34,13 @@ module "eks" {
       type                 = "STANDARD"
       policy_associations  = []
       username             = "admin"
+    }
+
+    ci = {
+      principal_arn        = "arn:aws:iam::361598269712:role/codebuild-fastfood-pipeline-role"  
+      type                 = "STANDARD"
+      policy_associations  = []
+      username             = "ci"
     }
   }
 }

@@ -65,5 +65,5 @@ variable "sonar_instance_type" {
 variable "sonar_key_name" {
   description = "Key pair name for the SonarQube instance"
   type        = string
-  default     = "fastfood"
+  default     = "devkeypair"
 }

@@ -35,7 +35,7 @@ jobs:
           projectName         = "fastfood-app-eks"
           nodeGroup           = "fastfood-node"
           role                = "arn:aws:iam::361598269712:role/RootRole"
-          instanceType        = "t3.small"
+          instanceType        = "t3.medium"
           s3_bucket_name      = "terraform-pipeline-bucket-361598269712"
           sonar_key_name      = "devkeypair"
           sonar_ami_id        = "ami-02b3c03c6fadb6e2c"

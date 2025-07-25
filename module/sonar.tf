@@ -6,7 +6,7 @@ resource "aws_instance" "sonar" {
   vpc_security_group_ids = [aws_security_group.sg.id]
   subnet_id              = aws_subnet.public[0].id
 
-  user_data = <<-EOF
+  user_data_base64 = <<-EOF
               #!/bin/bash
               sudo yum update -y
               sudo amazon-linux-extras enable docker
@@ -45,4 +45,5 @@ resource "aws_instance" "sonar" {
   tags = {
     Name = "fastfood-sonar"
   }
+
 }

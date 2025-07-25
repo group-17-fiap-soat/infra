@@ -8,18 +8,18 @@ resource "aws_instance" "sonar" {
 
   user_data = <<-EOF
               #!/bin/bash
-              yum update -y
-              amazon-linux-extras enable docker
-              yum install -y docker
-              systemctl start docker
-              systemctl enable docker
-              usermod -aG docker ec2-user
+              sudo yum update -y
+              sudo amazon-linux-extras enable docker
+              sudo yum install -y docker
+              sudo systemctl start docker
+              sudo systemctl enable docker
+              sudo usermod -aG docker ec2-user
 
-              curl -L "https://github.com/docker/compose/releases/latest/download/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
-              chmod +x /usr/local/bin/docker-compose
+              sudo curl -L "https://github.com/docker/compose/releases/latest/download/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
+              sudo chmod +x /usr/local/bin/docker-compose
 
-              mkdir -p /opt/sonarqube
-              cat <<EOL > /opt/sonarqube/docker-compose.yml
+              sudo mkdir -p /opt/sonarqube
+              sudo tee /opt/sonarqube/docker-compose.yml > /dev/null <<EOL
               version: "3"
               services:
                 sonarqube:
@@ -40,7 +40,7 @@ resource "aws_instance" "sonar" {
               EOL
 
               cd /opt/sonarqube
-              docker-compose up -d
+              sudo /usr/local/bin/docker-compose up -d
               EOF
   tags = {
     Name = "fastfood-sonar"

@@ -39,7 +39,7 @@ jobs:
           s3_bucket_name      = "terraform-pipeline-bucket-361598269712"
           sonar_key_name      = "devkeypair"
           sonar_ami_id        = "ami-02b3c03c6fadb6e2c"
-          sonar_instance_type = "t3.micro"
+          sonar_instance_type = "t3.medium"
           EOF
 
       - name: 🔁 Cleanup para garantir módulos atualizados

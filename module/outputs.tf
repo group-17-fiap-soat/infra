@@ -2,21 +2,16 @@
 #        ECR Repository Outputs     #
 #####################################
 output "ecr_repository_name" {
-  value       = aws_ecr_repository.fastfood.name
-  description = "ECR repository name"
+  value = aws_ecr_repository.order.name
 }
 
 output "ecr_repository_url" {
-  value       = aws_ecr_repository.fastfood.repository_url
-  description = "URL to push/pull Docker images"
+  value = aws_ecr_repository.order.repository_url
 }
 
 output "ecr_repository_arn" {
-  value       = aws_ecr_repository.fastfood.arn
-  description = "ECR repository ARN"
+  value = aws_ecr_repository.order.arn
 }
-
-
 #####################################
 #         Networking Outputs        #
 #####################################

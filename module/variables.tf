@@ -53,13 +53,13 @@ variable "principalArn" {
 variable "sonar_ami_id" {
   description = "AMI ID for the SonarQube instance"
   type        = string
-  default     = "ami-0c55b159cbfafe1f0" # Bitnami SonarQube CE
+  default     = "ami-02b3c03c6fadb6e2c"
 }
 
 variable "sonar_instance_type" {
   description = "Instance type for the SonarQube instance"
   type        = string
-  default     = "t3.medium"
+  default     = "t3.micro"
 }
 
 variable "sonar_key_name" {

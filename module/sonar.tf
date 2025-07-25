@@ -1,3 +1,6 @@
+resource "random_id" "force_recreate" {
+  byte_length = 8
+}
 resource "aws_instance" "sonar" {
   ami           = var.sonar_ami_id
   instance_type = var.sonar_instance_type
@@ -6,7 +9,7 @@ resource "aws_instance" "sonar" {
   vpc_security_group_ids = [aws_security_group.sg.id]
   subnet_id              = aws_subnet.public[0].id
 
-  user_data_base64 = <<-EOF
+  user_data = <<-EOF
               #!/bin/bash
               sudo yum update -y
               sudo amazon-linux-extras enable docker
@@ -44,6 +47,7 @@ resource "aws_instance" "sonar" {
               EOF
   tags = {
     Name = "fastfood-sonar"
+    ForceCycle = random_id.force_recreate.hex
   }
 
 }
